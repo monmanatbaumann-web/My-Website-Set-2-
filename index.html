@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imperativsätze mit Emoji (Set 2)</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fdf6ec 0%, #f3ece0 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 80px;
+    color: #3a3226;
+    position: relative;
+  }
+  h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; text-align: center; }
+  .subtitle { font-size: 14px; color: #7a6f5e; margin: 0 0 24px; text-align: center; max-width: 500px; }
+  .deck-info { font-size: 13px; color: #9a8f7a; margin-bottom: 16px; }
+  .card {
+    width: min(92vw, 480px);
+    min-height: 320px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(120, 100, 60, 0.15);
+    border: 2px solid #e8ddc8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 26px;
+    text-align: center;
+    transition: transform 0.25s ease;
+  }
+  .card.flip { animation: pop 0.35s ease; }
+  @keyframes pop {
+    0% { transform: scale(0.9); opacity: 0.4; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .card-placeholder { font-size: 17px; color: #b0a68f; }
+  .card-top-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .card-category {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #c08a3e;
+    background: #fdf1de;
+    padding: 4px 12px;
+    border-radius: 12px;
+  }
+  .form-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: #e4efe6;
+    color: #4a6b57;
+    letter-spacing: 0.02em;
+  }
+  .emoji-face {
+    font-size: 56px;
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+  .th-label {
+    font-size: 11px;
+    color: #9a8f7a;
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .card-th-sentence {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2f2a20;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .scramble-label {
+    font-size: 11px;
+    color: #9a8f7a;
+    margin-bottom: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .word-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+  .word-chip {
+    background: #4a6b57;
+    color: #fff;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .hints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+  .hint-chip {
+    background: #fdf1de;
+    border: 1px solid #eadfc9;
+    border-radius: 10px;
+    padding: 5px 11px;
+    font-size: 12px;
+    color: #5a4e39;
+    line-height: 1.3;
+  }
+  .hint-chip .de { font-weight: 700; }
+  .hint-chip .th { font-size: 10.5px; color: #9a8f7a; }
+  .card-answer {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed #eadfc9;
+    width: 100%;
+    display: none;
+  }
+  .card-answer.show { display: block; }
+  .answer-label {
+    font-size: 11px; color: #9a8f7a; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px;
+  }
+  .answer-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .answer-de {
+    font-size: 17px; font-weight: 700; color: #4a6b57; line-height: 1.4;
+  }
+  .speak-btn {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: #4a6b57;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  .speak-btn:hover { background: #3d5947; }
+  .buttons-row {
+    display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; justify-content: center;
+  }
+  button {
+    font-size: 15px; font-weight: 600; padding: 12px 22px; border-radius: 12px;
+    border: none; cursor: pointer; transition: transform 0.12s ease;
+  }
+  button:active { transform: scale(0.96); }
+  .btn-primary { background: #d68c3f; color: #fff; }
+  .btn-primary:hover { background: #c47b30; }
+  .btn-secondary { background: #eee3d0; color: #5a4e39; }
+  .btn-secondary:hover { background: #e2d5bc; }
+  .btn-reveal { background: #4a6b57; color: #fff; }
+  .btn-reveal:hover { background: #3d5947; }
+  .timer-section {
+    margin-top: 40px; width: min(92vw, 480px); background: #fff; border-radius: 18px;
+    border: 2px solid #e8ddc8; padding: 20px 24px; text-align: center;
+  }
+  .timer-title { font-size: 14px; color: #7a6f5e; margin-bottom: 12px; font-weight: 600; }
+  .timer-options { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+  .time-opt {
+    padding: 8px 16px; border-radius: 10px; border: 2px solid #e8ddc8;
+    background: #fdf9f2; color: #6a5f4b; font-size: 14px; cursor: pointer;
+  }
+  .time-opt.selected { background: #4a6b57; border-color: #4a6b57; color: #fff; }
+  .timer-display {
+    font-size: 48px; font-weight: 700; color: #2f2a20; margin: 8px 0 16px;
+    font-variant-numeric: tabular-nums;
+  }
+  .timer-display.warning { color: #c0522e; }
+  .timer-controls { display: flex; gap: 10px; justify-content: center; }
+  .progress-track { width: 100%; height: 8px; background: #f0e8d8; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+  .progress-fill { height: 100%; background: #4a6b57; width: 100%; transition: width 1s linear, background 0.3s ease; }
+  .progress-fill.warning { background: #c0522e; }
+  footer { margin-top: 36px; font-size: 12px; color: #b0a68f; text-align: center; max-width: 480px; }
+
+  .watermark {
+    position: fixed;
+    bottom: 12px;
+    right: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #b0a68f;
+    background: rgba(255,255,255,0.7);
+    padding: 4px 10px;
+    border-radius: 8px;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+<h1>Imperativsätze mit Emoji (Set 2)</h1>
+<p class="subtitle">50 การ์ดใหม่ A2–B1 พร้อมอิโมจิ · เห็นภาพ อ่านประโยคไทย แล้วเรียงคำศัพท์เป็นประโยคคำสั่งภาษาเยอรมัน (ไม่ซ้ำกับชุดแรก)</p>
+<p class="deck-info" id="deckInfo">การ์ดเหลือ: 50 / 50</p>
+
+<div class="card" id="card">
+  <p class="card-placeholder">กดปุ่มด้านล่างเพื่อจับการ์ดใบแรก</p>
+</div>
+
+<div class="buttons-row">
+  <button class="btn-primary" id="drawBtn">Nächste Karte ziehen</button>
+  <button class="btn-reveal" id="revealBtn">เฉลย</button>
+  <button class="btn-secondary" id="shuffleBtn">Neu mischen</button>
+</div>
+
+<div class="timer-section">
+  <div class="timer-title">ตั้งเวลาเรียงประโยค</div>
+  <div class="timer-options">
+    <div class="time-opt" data-sec="30">30 วิ</div>
+    <div class="time-opt selected" data-sec="60">1 นาที</div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="timer-display" id="timerDisplay">01:00</div>
+  <div class="timer-controls">
+    <button class="btn-primary" id="startBtn">เริ่ม</button>
+    <button class="btn-secondary" id="resetBtn">รีเซ็ต</button>
+  </div>
+</div>
+
+<footer>ดูอิโมจิ + อ่านประโยคไทย แล้วเรียงคำศัพท์ภาษาเยอรมันให้ถูกต้องเป็นประโยคคำสั่ง (Imperativ) กด "เฉลย" ดูประโยคที่ถูกต้องและฟังเสียงอ่าน · เปิดไฟล์นี้ในเบราว์เซอร์ แชร์หน้าจอผ่าน Zoom ได้เลย</footer>
+
+<div class="watermark">Deutsch mit Monmanat</div>
+
+<script>
+// [emoji, form_tag, thai_sentence, [scrambled words...], correct_sentence_de, hints[[de,th],...]]
+const deck = [
+["🛁","du","ทำความสะอาดห้องน้ำด้วยนะ",["putz","das","Badezimmer"],"Putz das Badezimmer!",[["putzen","ทำความสะอาด"],["das Badezimmer","ห้องน้ำ"]]],
+["🧑‍🎓","ihr","ตั้งใจฟังครูนะทุกคน",["hört","der","Lehrerin","zu"],"Hört der Lehrerin zu!",[["zuhören","ฟัง(ตั้งใจ)"],["die Lehrerin","ครูผู้หญิง"]]],
+["🍳","du","ทอดไข่ให้ฉันหน่อยนะ",["brat","mir","ein","Ei"],"Brat mir ein Ei!",[["braten","ทอด"],["das Ei","ไข่"]]],
+["🧑‍💼","Sie","กรุณาส่งรายงานภายในวันศุกร์ค่ะ",["schicken","Sie","den","Bericht","bis","Freitag"],"Schicken Sie den Bericht bis Freitag!",[["schicken","ส่ง"],["der Bericht","รายงาน"]]],
+["🎒","ihr","เตรียมกระเป๋าให้พร้อมก่อนออกเดินทางนะทุกคน",["packt","eure","Taschen","bevor","wir","losfahren"],"Packt eure Taschen, bevor wir losfahren!",[["packen","แพ็ค/เตรียม"],["losfahren","ออกเดินทาง"]]],
+["🧊","du","อย่าลืมปิดตู้เย็นนะ",["mach","den","Kühlschrank","zu"],"Mach den Kühlschrank zu!",[["zumachen","ปิด"],["der Kühlschrank","ตู้เย็น"]]],
+["📮","Sie","กรุณาส่งจดหมายฉบับนี้ค่ะ",["schicken","Sie","diesen","Brief","ab"],"Schicken Sie diesen Brief ab!",[["abschicken","ส่ง(จดหมาย)"],["der Brief","จดหมาย"]]],
+["🧑‍🍳","du","หั่นผักให้ละเอียดหน่อยนะ",["schneid","das","Gemüse","klein"],"Schneid das Gemüse klein!",[["schneiden","หั่น"],["das Gemüse","ผัก"]]],
+["📵","ihr","ปิดโทรศัพท์ก่อนเข้าไปในห้องประชุมนะทุกคน",["schaltet","eure","Handys","aus","bevor","ihr","reingeht"],"Schaltet eure Handys aus, bevor ihr reingeht!",[["ausschalten","ปิด(เครื่อง)"],["bevor","ก่อนที่"]]],
+["🌡️","du","ใส่เสื้อกันหนาวนะเพราะอากาศเย็น",["zieh","eine","Jacke","an"],"Zieh eine Jacke an!",[["anziehen","สวมใส่"],["die Jacke","เสื้อแจ็คเก็ต"]]],
+["🚰","Sie","กรุณาปิดก๊อกน้ำด้วยค่ะ",["machen","Sie","den","Wasserhahn","zu"],"Machen Sie den Wasserhahn zu!",[["der Wasserhahn","ก๊อกน้ำ"],["zumachen","ปิด"]]],
+["🐾","du","ให้อาหารสุนัขหน่อยนะ",["füttere","den","Hund"],"Füttere den Hund!",[["füttern","ให้อาหาร"],["der Hund","สุนัข"]]],
+["🧑‍🤝‍🧑","ihr","แนะนำตัวเองให้เพื่อนใหม่ฟังนะทุกคน",["stellt","euch","dem","neuen","Freund","vor"],"Stellt euch dem neuen Freund vor!",[["sich vorstellen","แนะนำตัว"],["der Freund","เพื่อน"]]],
+["🖊️","du","ทำเครื่องหมายคำตอบที่ถูกต้องนะ",["kreuz","die","richtige","Antwort","an"],"Kreuz die richtige Antwort an!",[["ankreuzen","ทำเครื่องหมาย"],["die Antwort","คำตอบ"]]],
+["🧑‍⚕️","Sie","กรุณากินยานี้หลังอาหารค่ะ",["nehmen","Sie","diese","Tabletten","nach","dem","Essen"],"Nehmen Sie diese Tabletten nach dem Essen!",[["die Tablette","ยาเม็ด"],["nach dem Essen","หลังอาหาร"]]],
+["🚲","du","จอดจักรยานตรงนี้นะ",["stell","dein","Fahrrad","hier","ab"],"Stell dein Fahrrad hier ab!",[["abstellen","จอด"],["das Fahrrad","จักรยาน"]]],
+["🧹","ihr","กวาดพื้นให้สะอาดนะทุกคน",["fegt","den","Boden"],"Fegt den Boden!",[["fegen","กวาด"],["der Boden","พื้น"]]],
+["🎵","du","เปิดเพลงหน่อยสิ",["mach","Musik","an"],"Mach Musik an!",[["anmachen","เปิด"],["die Musik","เพลง"]]],
+["🧴","Sie","กรุณาใช้เจลล้างมือก่อนเข้าไปค่ะ",["benutzen","Sie","Handdesinfektionsmittel","bevor","Sie","reingehen"],"Benutzen Sie Handdesinfektionsmittel, bevor Sie reingehen!",[["benutzen","ใช้"],["bevor","ก่อนที่"]]],
+["🧑‍🏭","du","สวมถุงมือก่อนทำงานนะ",["zieh","Handschuhe","an","bevor","du","arbeitest"],"Zieh Handschuhe an, bevor du arbeitest!",[["die Handschuhe","ถุงมือ"],["bevor","ก่อนที่"]]],
+["📅","ihr","จดวันนัดหมายไว้ในปฏิทินนะทุกคน",["schreibt","den","Termin","in","den","Kalender"],"Schreibt den Termin in den Kalender!",[["der Termin","นัดหมาย"],["der Kalender","ปฏิทิน"]]],
+["🧑‍🎨","du","ระบายสีภาพนี้ให้สวยนะ",["mal","dieses","Bild","schön","an"],"Mal dieses Bild schön an!",[["anmalen","ระบายสี"],["das Bild","ภาพ"]]],
+["🚯","Sie","กรุณาอย่าทิ้งขยะที่นี่ค่ะ",["werfen","Sie","hier","keinen","Müll","hin"],"Werfen Sie hier keinen Müll hin!",[["der Müll","ขยะ"],["hinwerfen","ทิ้ง"]]],
+["🧑‍🔧","du","ซ่อมจักรยานให้ฉันหน่อยได้ไหม",["repariere","bitte","mein","Fahrrad"],"Repariere bitte mein Fahrrad!",[["reparieren","ซ่อม"],["bitte","กรุณา/ขอร้อง"]]],
+["🎫","ihr","ซื้อตั๋วล่วงหน้านะทุกคน",["kauft","die","Tickets","im","Voraus"],"Kauft die Tickets im Voraus!",[["das Ticket","ตั๋ว"],["im Voraus","ล่วงหน้า"]]],
+["🧑‍🌾","du","รดน้ำต้นไม้ทุกเช้านะ",["gieß","die","Pflanzen","jeden","Morgen"],"Gieß die Pflanzen jeden Morgen!",[["gießen","รดน้ำ"],["die Pflanze","ต้นไม้"]]],
+["📖","Sie","กรุณาพลิกไปหน้าถัดไปค่ะ",["blättern","Sie","zur","nächsten","Seite","um"],"Blättern Sie zur nächsten Seite um!",[["umblättern","พลิกหน้า"],["die Seite","หน้า(หนังสือ)"]]],
+["🧑‍🚒","ihr","ออกจากตึกทันทีนะทุกคน",["verlasst","sofort","das","Gebäude"],"Verlasst sofort das Gebäude!",[["verlassen","ออกจาก"],["das Gebäude","ตึก/อาคาร"]]],
+["🎁","du","ห่อของขวัญให้สวยหน่อยนะ",["pack","das","Geschenk","schön","ein"],"Pack das Geschenk schön ein!",[["einpacken","ห่อ"],["das Geschenk","ของขวัญ"]]],
+["🧯","Sie","กรุณาใช้ถังดับเพลิงตรงนี้ค่ะ",["benutzen","Sie","hier","den","Feuerlöscher"],"Benutzen Sie hier den Feuerlöscher!",[["der Feuerlöscher","ถังดับเพลิง"],["benutzen","ใช้"]]],
+["🧑‍🎤","du","ร้องเพลงนี้ให้ฉันฟังหน่อย",["sing","mir","dieses","Lied","vor"],"Sing mir dieses Lied vor!",[["vorsingen","ร้องให้ฟัง"],["das Lied","เพลง"]]],
+["🧊","ihr","อย่าลืมใส่น้ำแข็งในแก้วนะทุกคน",["vergesst","das","Eis","im","Glas","nicht"],"Vergesst das Eis im Glas nicht!",[["das Eis","น้ำแข็ง"],["das Glas","แก้ว"]]],
+["🎨","du","ทำความสะอาดพู่กันหลังใช้นะ",["reinige","den","Pinsel","nach","dem","Benutzen"],"Reinige den Pinsel nach dem Benutzen!",[["reinigen","ทำความสะอาด"],["der Pinsel","พู่กัน"]]],
+["🧑‍🏫","Sie","กรุณาตอบคำถามนี้ก่อนค่ะ",["beantworten","Sie","zuerst","diese","Frage"],"Beantworten Sie zuerst diese Frage!",[["beantworten","ตอบ"],["die Frage","คำถาม"]]],
+["🚪","du","เคาะประตูก่อนเข้ามานะ",["klopf","an","die","Tür","bevor","du","reinkommst"],"Klopf an die Tür, bevor du reinkommst!",[["klopfen","เคาะ"],["die Tür","ประตู"]]],
+["🧑‍🍼","ihr","ระวังทารกด้วยนะทุกคน",["passt","auf","das","Baby","auf"],"Passt auf das Baby auf!",[["aufpassen","ระวัง/ดูแล"],["das Baby","ทารก"]]],
+["📸","du","ยิ้มก่อนถ่ายรูปนะ",["lächel","bevor","ich","das","Foto","mache"],"Lächel, bevor ich das Foto mache!",[["lächeln","ยิ้ม"],["das Foto","รูปภาพ"]]],
+["🧯","ihr","ฝึกซ้อมการอพยพหนีไฟทุกเดือนนะทุกคน",["übt","die","Evakuierung","jeden","Monat"],"Übt die Evakuierung jeden Monat!",[["üben","ฝึกซ้อม"],["die Evakuierung","การอพยพ"]]],
+["🧴","du","ล้างหน้าก่อนนอนนะ",["wasch","dir","das","Gesicht","vor","dem","Schlafen"],"Wasch dir das Gesicht vor dem Schlafen!",[["das Gesicht","ใบหน้า"],["sich waschen","ล้าง(ตัวเอง)"]]],
+["🧑‍💻","Sie","กรุณาปิดโปรแกรมก่อนออกจากออฟฟิศค่ะ",["schließen","Sie","das","Programm","bevor","Sie","das","Büro","verlassen"],"Schließen Sie das Programm, bevor Sie das Büro verlassen!",[["schließen","ปิด"],["das Programm","โปรแกรม"]]],
+["🎈","ihr","เป่าลูกโป่งให้ปาร์ตี้นะทุกคน",["blast","Luftballons","für","die","Party","auf"],"Blast Luftballons für die Party auf!",[["aufblasen","เป่า(ลม)"],["der Luftballon","ลูกโป่ง"]]],
+["🧑‍🚀","du","ใฝ่ฝันให้ไกลนะ",["träum","groß"],"Träum groß!",[["träumen","ใฝ่ฝัน"],["groß","ใหญ่/ไกล"]]],
+["🧯","du","โทรแจ้งดับเพลิงทันทีนะ",["ruf","sofort","die","Feuerwehr","an"],"Ruf sofort die Feuerwehr an!",[["die Feuerwehr","หน่วยดับเพลิง"],["anrufen","โทรแจ้ง"]]],
+["🧑‍🌾","ihr","เก็บผักในสวนนะทุกคน",["erntet","das","Gemüse","im","Garten"],"Erntet das Gemüse im Garten!",[["ernten","เก็บเกี่ยว"],["der Garten","สวน"]]],
+["📎","du","หนีบเอกสารเข้าด้วยกันนะ",["heft","die","Dokumente","zusammen"],"Heft die Dokumente zusammen!",[["zusammenheften","หนีบรวมกัน"],["das Dokument","เอกสาร"]]],
+["🧑‍✈️","Sie","กรุณารัดเข็มขัดนิรภัยระหว่างบินค่ะ",["schnallen","Sie","sich","während","des","Fluges","an"],"Schnallen Sie sich während des Fluges an!",[["sich anschnallen","คาดเข็มขัด"],["der Flug","เที่ยวบิน"]]],
+["🧑‍🎓","du","ทบทวนบทเรียนก่อนสอบนะ",["wiederhol","den","Stoff","vor","der","Prüfung"],"Wiederhol den Stoff vor der Prüfung!",[["wiederholen","ทบทวน"],["die Prüfung","การสอบ"]]],
+["🚗","ihr","ตรวจสอบน้ำมันรถก่อนเดินทางนะทุกคน",["prüft","das","Benzin","bevor","wir","losfahren"],"Prüft das Benzin, bevor wir losfahren!",[["prüfen","ตรวจสอบ"],["das Benzin","น้ำมันรถ"]]],
+["📦","du","แกะกล่องพัสดุด้วยความระมัดระวังนะ",["pack","das","Paket","vorsichtig","aus"],"Pack das Paket vorsichtig aus!",[["auspacken","แกะ(กล่อง)"],["das Paket","พัสดุ"]]],
+["🌙","du","นอนก่อนสี่ทุ่มนะ",["geh","vor","zehn","Uhr","ins","Bett"],"Geh vor zehn Uhr ins Bett!",[["ins Bett gehen","เข้านอน"],["vor","ก่อน"]]]
+];
+
+let pool = [];
+
+function resetPool() {
+  pool = [...Array(deck.length).keys()];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+}
+resetPool();
+
+const cardEl = document.getElementById('card');
+const deckInfo = document.getElementById('deckInfo');
+const drawBtn = document.getElementById('drawBtn');
+const shuffleBtn = document.getElementById('shuffleBtn');
+const revealBtn = document.getElementById('revealBtn');
+
+function updateDeckInfo() {
+  deckInfo.textContent = `การ์ดเหลือ: ${pool.length} / ${deck.length}`;
+}
+
+function shuffleWords(words) {
+  const arr = [...words];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function drawCard() {
+  if (pool.length === 0) {
+    resetPool();
+    deckInfo.textContent = 'สับไพ่ใหม่แล้ว! การ์ดเหลือ: ' + pool.length + ' / ' + deck.length;
+  }
+  const idx = pool.pop();
+  renderCard(deck[idx]);
+  updateDeckInfo();
+}
+
+let currentGermanSentence = '';
+
+function renderCard(item) {
+  const [emoji, form, th, words, correctDe, hints] = item;
+  currentGermanSentence = correctDe;
+  const scrambled = shuffleWords(words);
+  const wordsHtml = scrambled.map(w => `<div class="word-chip">${w.trim()}</div>`).join('');
+  const hintsHtml = hints.map(h => `<div class="hint-chip"><span class="de">${h[0]}</span> <span class="th">(${h[1]})</span></div>`).join('');
+  cardEl.innerHTML = `
+    <div class="card-top-row">
+      <div class="card-category">Imperativsatz</div>
+      <div class="form-tag">${form}-Form</div>
+    </div>
+    <div class="emoji-face">${emoji}</div>
+    <div class="th-label">ประโยคภาษาไทย</div>
+    <div class="card-th-sentence">${th}</div>
+    <div class="scramble-label">คำศัพท์ (สลับลำดับ) — เรียงเป็นประโยคคำสั่ง</div>
+    <div class="word-chips">${wordsHtml}</div>
+    <div class="hints">${hintsHtml}</div>
+    <div class="card-answer" id="cardAnswer">
+      <div class="answer-label">เฉลย (ประโยคที่ถูกต้อง)</div>
+      <div class="answer-row">
+        <div class="answer-de">${correctDe}</div>
+        <button class="speak-btn" id="speakBtn" title="ฟังเสียงอ่านเฉลย">🔊</button>
+      </div>
+    </div>
+  `;
+  cardEl.classList.remove('flip');
+  void cardEl.offsetWidth;
+  cardEl.classList.add('flip');
+
+  const speakBtn = document.getElementById('speakBtn');
+  if (speakBtn) {
+    speakBtn.addEventListener('click', () => speakGerman(currentGermanSentence));
+  }
+}
+
+function speakGerman(text) {
+  if (!('speechSynthesis' in window)) {
+    alert('เบราว์เซอร์นี้ไม่รองรับการอ่านออกเสียง');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'de-DE';
+  utter.rate = 0.95;
+  window.speechSynthesis.speak(utter);
+}
+
+drawBtn.addEventListener('click', drawCard);
+shuffleBtn.addEventListener('click', () => {
+  resetPool();
+  cardEl.innerHTML = '<p class="card-placeholder">สับไพ่ใหม่แล้ว กดจับการ์ดใบต่อไป</p>';
+  updateDeckInfo();
+});
+revealBtn.addEventListener('click', () => {
+  const ans = document.getElementById('cardAnswer');
+  if (ans) ans.classList.toggle('show');
+});
+updateDeckInfo();
+
+// --- Timer ---
+let totalSeconds = 60;
+let remaining = 60;
+let timerInterval = null;
+let running = false;
+
+const timeOpts = document.querySelectorAll('.time-opt');
+const timerDisplay = document.getElementById('timerDisplay');
+const progressFill = document.getElementById('progressFill');
+const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+function formatTime(s) {
+  const m = Math.floor(s / 60).toString().padStart(2, '0');
+  const sec = (s % 60).toString().padStart(2, '0');
+  return `${m}:${sec}`;
+}
+
+function updateTimerDisplay() {
+  timerDisplay.textContent = formatTime(remaining);
+  const pct = (remaining / totalSeconds) * 100;
+  progressFill.style.width = pct + '%';
+  const isWarning = remaining <= 10;
+  timerDisplay.classList.toggle('warning', isWarning);
+  progressFill.classList.toggle('warning', isWarning);
+}
+
+timeOpts.forEach(opt => {
+  opt.addEventListener('click', () => {
+    if (running) return;
+    timeOpts.forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    totalSeconds = parseInt(opt.dataset.sec, 10);
+    remaining = totalSeconds;
+    updateTimerDisplay();
+  });
+});
+
+function tick() {
+  remaining--;
+  updateTimerDisplay();
+  if (remaining <= 0) {
+    clearInterval(timerInterval);
+    running = false;
+    startBtn.textContent = 'เริ่ม';
+    timerDisplay.textContent = 'หมดเวลา!';
+  }
+}
+
+startBtn.addEventListener('click', () => {
+  if (running) {
+    clearInterval(timerInterval);
+    running = false;
+    startBtn.textContent = 'เริ่ม';
+  } else {
+    if (remaining <= 0) remaining = totalSeconds;
+    running = true;
+    startBtn.textContent = 'หยุดชั่วคราว';
+    timerInterval = setInterval(tick, 1000);
+  }
+});
+
+resetBtn.addEventListener('click', () => {
+  clearInterval(timerInterval);
+  running = false;
+  startBtn.textContent = 'เริ่ม';
+  remaining = totalSeconds;
+  updateTimerDisplay();
+});
+
+updateTimerDisplay();
+</script>
+
+</body>
+</html>
